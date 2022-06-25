@@ -12,7 +12,6 @@
     <body>
         <h1>음료수의 정보를 알려주는 프로그램</h1>
         <p>음료수의 가격, 맛, 열량, 평들을 알려주는 프로그램</p>
-            <div>Teachable Machine Image Model</div>
         <button type="button" onclick="init()">Start</button>
         <div id="webcam-container"></div>
         <div id="label-container"></div>
@@ -21,75 +20,94 @@
         <script type="text/javascript">
             // More API functions here:
             // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
+        
             // the link to your model provided by Teachable Machine export panel
-            const URL = "./my_model/";
-
+            const URL = "https://teachablemachine.withgoogle.com/models/jwZ_8cMas/";
+        
             let model, webcam, labelContainer, maxPredictions;
-
+        
             // Load the image model and setup the webcam
             async function init() {
                 const modelURL = URL + "model.json";
                 const metadataURL = URL + "metadata.json";
-
+        
                 // load the model and metadata
                 // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
                 // or files from your local hard drive
                 // Note: the pose library adds "tmImage" object to your window (window.tmImage)
                 model = await tmImage.load(modelURL, metadataURL);
                 maxPredictions = model.getTotalClasses();
-
+        
                 // Convenience function to setup a webcam
-                const flip = true; // whether to flip the webcam
-                webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-                await webcam.setup(); // request access to the webcam
-                await webcam.play();
-                window.requestAnimationFrame(loop);
-
-                 //append elements to the DOM
-                document.getElementById("webcam-container").appendChild(webcam.canvas);
+                //const flip = true; // whether to flip the webcam
+                //webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+                //await webcam.setup(); // request access to the webcam
+                //await webcam.play();
+                //window.requestAnimationFrame(loop);
+        
+                // append elements to the DOM
+                //document.getElementById("webcam-container").appendChild(webcam.canvas);
                 labelContainer = document.getElementById("label-container");
                 for (let i = 0; i < maxPredictions; i++) { // and class labels
                     labelContainer.appendChild(document.createElement("div"));
                 }
             }
-
-            async function loop() {
-                webcam.update(); // update the webcam frame
-                await predict();
-                window.requestAnimationFrame(loop);
-            }
-
+        
+            //async function loop() {
+                //webcam.update(); // update the webcam frame
+                //await predict();
+                //window.requestAnimationFrame(loop);
+            //}
+        
             // run the webcam image through the image model
             async function predict() {
                 // predict can take in an image, video or canvas html element
-                const prediction = await model.predict(webcam.canvas);
-                for (let i = 0; i < maxPredictions; i++) {
-                    const classPrediction =
-                        prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-                    labelContainer.childNodes[i].innerHTML = classPrediction;
+                var image = document.getElementById("my-image")
+                const prediction = await model.predict(image,false);
+                if(prediction[0].probability > 0.7){
+                labelContainer.childNodes[0].innerHTML = "솔의눈"
+                labelContainer.childNodes[0].innerHTML = "솔의 눈은 롯데칠성음료에서 제조발매하는 솔싹추출물 음료다. 맛은 솔향에 가까운 싱그러운 맛이고, 색은 연한 녹색이다. 호불호가 상당히 갈리는 음료이다."
                 }
+                else
+                labelContainer.childNodes[0].innerHTML = "닥터페퍼"
+                labelContainer.childNodes[0].innerHTML = "닥터페퍼는 미국 큐릭닥터페퍼에서 나오는 탄산 음료다. 향과 맛이 독특한데 그이유는 23가지 맛이 섞였기 때문이다. 색은 검정색이다."
+
             }
         </script>
-        <script>
-                    <div class="file-upload">
-            <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add Image</button>
-
-            <div class="image-upload-wrap">
-                <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
-                <div class="drag-text">
-                <h3>Drag and drop a file or select add Image</h3>
-                </div>
-            </div>
-            <div class="file-upload-content">
-                <img class="file-upload-image" src="#" alt="your image" />
-                <div class="image-title-wrap">
-                <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
-                </div>
-            </div>
-            </div>
+        <script>function readURL(input) {
+                if (input.files && input.files[0]) {
+            
+                var reader = new FileReader();
+            
+                reader.onload = function(e) {
+                    $('.image-upload-wrap').hide();
+            
+                    $('.file-upload-image').attr('src', e.target.result);
+                    $('.file-upload-content').show();
+            
+                    $('.image-title').html(input.files[0].name);
+                };
+            
+                reader.readAsDataURL(input.files[0]);
+            
+                } else {
+                removeUpload();
+                }
+            }
+            
+            function removeUpload() {
+                $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+                $('.file-upload-content').hide();
+                $('.image-upload-wrap').show();
+            }
+            $('.image-upload-wrap').bind('dragover', function () {
+                    $('.image-upload-wrap').addClass('image-dropping');
+                });
+                $('.image-upload-wrap').bind('dragleave', function () {
+                    $('.image-upload-wrap').removeClass('image-dropping');
+            });
         </script>
+            
+    </body>
 
-    <body>
-
-<html>
+</html>
