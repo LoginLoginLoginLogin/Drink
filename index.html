@@ -84,7 +84,7 @@
                 // predict can take in an image, video or canvas html element
                 var image = document.getElementById("my-image")
                 const prediction = await model.predict(image,false);
-                if(prediction[0].probability > 0.7){
+                if(prediction[0].probability > 0.5){
                 labelContainer.childNodes[0].innerHTML = "솔의눈"
                 labelContainer.childNodes[0].innerHTML = "솔의 눈은 롯데칠성음료에서 제조발매하는 솔싹추출물 음료다. 맛은 솔향에 가까운 싱그러운 맛이고, 색은 연한 녹색이다. 호불호가 상당히 갈리는 음료이다."
                 }
